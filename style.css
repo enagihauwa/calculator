@@ -1,0 +1,262 @@
+:root {
+  --bg: #eef1f8;
+  --app-bg: #ffffff;
+  --text: #1c1e26;
+  --muted: #6b7280;
+  --display-bg: #f4f6fb;
+  --btn-bg: #ffffff;
+  --btn-hover: #e9ecf5;
+  --btn-active: #dde1f0;
+  --operator-bg: #4f6bed;
+  --operator-hover: #3f57c9;
+  --operator-text: #ffffff;
+  --equals-bg: #2fbf71;
+  --equals-hover: #26a25f;
+  --function-bg: #e4e7f0;
+  --function-hover: #d3d7e6;
+  --border: #dfe3ee;
+  --shadow: 0 10px 30px rgba(20, 24, 40, 0.08);
+  --radius: 16px;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1117;
+  --app-bg: #1a1d29;
+  --text: #f1f2f6;
+  --muted: #9aa0ac;
+  --display-bg: #12141d;
+  --btn-bg: #232735;
+  --btn-hover: #2c3143;
+  --btn-active: #363c52;
+  --operator-bg: #5b7cfa;
+  --operator-hover: #4863d6;
+  --operator-text: #ffffff;
+  --equals-bg: #34c77b;
+  --equals-hover: #2aa869;
+  --function-bg: #2a2e3d;
+  --function-hover: #343a4d;
+  --border: #2a2e3d;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  transition: background 0.25s ease, color 0.25s ease;
+  padding: 24px;
+}
+
+.app {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.calculator {
+  width: 320px;
+  background: var(--app-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  transition: background 0.25s ease;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.top-bar h1 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 600;
+}
+
+#theme-toggle {
+  border: none;
+  background: var(--function-bg);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+#theme-toggle:hover {
+  background: var(--function-hover);
+}
+
+.display {
+  background: var(--display-bg);
+  border-radius: 12px;
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  text-align: right;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.expression {
+  color: var(--muted);
+  font-size: 14px;
+  min-height: 18px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.result {
+  font-size: 36px;
+  font-weight: 600;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  background: var(--btn-bg);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 16px 0;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+  border: 1px solid var(--border);
+}
+
+.btn:hover {
+  background: var(--btn-hover);
+}
+
+.btn:active {
+  background: var(--btn-active);
+  transform: scale(0.97);
+}
+
+.btn.wide {
+  grid-column: span 2;
+}
+
+.btn.function {
+  background: var(--function-bg);
+}
+
+.btn.function:hover {
+  background: var(--function-hover);
+}
+
+.btn.operator {
+  background: var(--operator-bg);
+  color: var(--operator-text);
+  border: none;
+}
+
+.btn.operator:hover {
+  background: var(--operator-hover);
+}
+
+.btn.equals {
+  background: var(--equals-bg);
+  color: #ffffff;
+  border: none;
+}
+
+.btn.equals:hover {
+  background: var(--equals-hover);
+}
+
+.history-panel {
+  width: 240px;
+  background: var(--app-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  max-height: 460px;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.history-header h2 {
+  font-size: 15px;
+  margin: 0;
+}
+
+#clear-history {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+#clear-history:hover {
+  color: var(--text);
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.history-list li {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.history-list li:hover {
+  background: var(--btn-hover);
+  border-radius: 8px;
+}
+
+.history-list .h-expr {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.history-list .h-result {
+  font-weight: 600;
+}
+
+.history-empty {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 0;
+}
