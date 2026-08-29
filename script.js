@@ -2,6 +2,7 @@ const STORAGE_KEYS = {
   state: "calculator.state",
   history: "calculator.history",
   theme: "calculator.theme",
+  sciOpen: "calculator.sciOpen",
 };
 
 const expressionEl = document.getElementById("expression");
@@ -9,12 +10,16 @@ const resultEl = document.getElementById("result");
 const historyListEl = document.getElementById("history-list");
 const themeToggleBtn = document.getElementById("theme-toggle");
 const clearHistoryBtn = document.getElementById("clear-history");
+const sciToggleBtn = document.getElementById("sci-toggle");
+const sciButtonsEl = document.getElementById("sci-buttons");
+const angleToggleBtn = document.getElementById("angle-toggle");
 
 let state = {
   current: "0",
   previous: null,
   operator: null,
   overwrite: false,
+  angleMode: "deg",
 };
 
 let history = [];
@@ -26,8 +31,9 @@ function loadState() {
       state = { ...state, ...saved };
     }
   } catch (e) {
-    state = { current: "0", previous: null, operator: null, overwrite: false };
+    state = { current: "0", previous: null, operator: null, overwrite: false, angleMode: "deg" };
   }
+  angleToggleBtn.textContent = state.angleMode.toUpperCase();
 }
 
 function saveState() {
@@ -66,7 +72,85 @@ function toggleTheme() {
   localStorage.setItem(STORAGE_KEYS.theme, next);
 }
 
-const OP_SYMBOLS = { "+": "+", "-": "−", "*": "×", "/": "÷" };
+function loadSciPanel() {
+  const isOpen = localStorage.getItem(STORAGE_KEYS.sciOpen) === "true";
+  sciButtonsEl.classList.toggle("hidden", !isOpen);
+  sciToggleBtn.classList.toggle("active", isOpen);
+}
+
+function toggleSciPanel() {
+  const isOpen = !sciButtonsEl.classList.contains("hidden");
+  sciButtonsEl.classList.toggle("hidden", isOpen);
+  sciToggleBtn.classList.toggle("active", !isOpen);
+  localStorage.setItem(STORAGE_KEYS.sciOpen, String(!isOpen));
+}
+
+function toggleAngleMode() {
+  state.angleMode = state.angleMode === "deg" ? "rad" : "deg";
+  angleToggleBtn.textContent = state.angleMode.toUpperCase();
+  saveState();
+}
+
+const OP_SYMBOLS = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "^" };
+
+function factorial(n) {
+  if (n < 0 || !Number.isInteger(n)) return NaN;
+  if (n > 170) return Infinity;
+  let result = 1;
+  for (let i = 2; i <= n; i++) result *= i;
+  return result;
+}
+
+function applyUnary(op) {
+  const x = Number(state.current);
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const angle = state.angleMode === "deg" ? toRad(x) : x;
+  let result;
+  switch (op) {
+    case "sqrt":
+      result = x < 0 ? NaN : Math.sqrt(x);
+      break;
+    case "square":
+      result = x * x;
+      break;
+    case "reciprocal":
+      result = x === 0 ? NaN : 1 / x;
+      break;
+    case "sin":
+      result = Math.sin(angle);
+      break;
+    case "cos":
+      result = Math.cos(angle);
+      break;
+    case "tan":
+      result = Math.tan(angle);
+      break;
+    case "log":
+      result = x <= 0 ? NaN : Math.log10(x);
+      break;
+    case "ln":
+      result = x <= 0 ? NaN : Math.log(x);
+      break;
+    case "factorial":
+      result = factorial(x);
+      break;
+    case "negate":
+      result = x * -1;
+      break;
+    case "pi":
+      result = Math.PI;
+      break;
+    case "e":
+      result = Math.E;
+      break;
+    default:
+      result = x;
+  }
+  state.current = Number.isFinite(result) ? String(result) : "Error";
+  state.overwrite = true;
+  saveState();
+  render();
+}
 
 function formatNumber(numStr) {
   if (numStr === "" || numStr === "-") return numStr;
@@ -152,6 +236,8 @@ function compute(a, b, op) {
       return x * y;
     case "/":
       return y === 0 ? NaN : x / y;
+    case "^":
+      return Math.pow(x, y);
     default:
       return y;
   }
@@ -238,11 +324,14 @@ document.querySelectorAll(".btn").forEach((btn) => {
     else if (action === "percent") toPercent();
     else if (action === "operator") chooseOperator(value);
     else if (action === "equals") equals();
+    else if (action === "unary") applyUnary(value);
+    else if (action === "toggle-angle") toggleAngleMode();
   });
 });
 
 themeToggleBtn.addEventListener("click", toggleTheme);
 clearHistoryBtn.addEventListener("click", clearHistory);
+sciToggleBtn.addEventListener("click", toggleSciPanel);
 
 document.addEventListener("keydown", (e) => {
   if (e.key >= "0" && e.key <= "9") inputNumber(e.key);
@@ -257,5 +346,6 @@ document.addEventListener("keydown", (e) => {
 loadTheme();
 loadState();
 loadHistory();
+loadSciPanel();
 render();
 renderHistory();

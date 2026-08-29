@@ -3,8 +3,10 @@
 ## What this project is
 
 A browser-based calculator built with plain HTML, CSS, and JavaScript. It supports the four basic
-arithmetic operations, percentages, keyboard input, a light/dark theme toggle, and a calculation
-history — all of which persist between visits using the browser's Web Storage (`localStorage`).
+arithmetic operations, percentages, a collapsible scientific mode (square root, powers, trig
+functions, logarithms, factorial, and constants), keyboard input, a light/dark theme toggle, and a
+calculation history — all of which persist between visits using the browser's Web Storage
+(`localStorage`).
 
 ## Who it's for
 
@@ -49,6 +51,14 @@ presentation, behavior — stays independent and easy to maintain.
   scannable, rather than growing indefinitely.
 - **Click-to-reuse history.** Clicking a past history entry loads its result back into the
   display, making the history functionally useful rather than just a log.
+- **Scientific functions kept in a collapsible panel, off by default.** Rather than always
+  showing sin/cos/tan/log/etc., they're tucked behind a toggle so the everyday calculator stays
+  simple, while `xʸ` (power) is treated as a regular binary operator so it can reuse the existing
+  operator/`compute()` pipeline instead of a separate code path.
+- **Degrees by default for trig functions, with an explicit DEG/RAD toggle.** Silently assuming
+  radians is a common source of "wrong answer" bugs in simple calculators; degrees are more
+  intuitive for casual use, and the mode is shown on the toggle button itself so it's never
+  ambiguous which one is active.
 
 ## Challenges encountered and how they were solved
 
@@ -67,3 +77,7 @@ presentation, behavior — stays independent and easy to maintain.
   logic. Solved by routing both the button click handlers and the `keydown` listener through the
   same shared functions (`inputNumber`, `chooseOperator`, `equals`, etc.) instead of duplicating
   logic.
+- **Invalid inputs to scientific functions** (square root of a negative number, log/ln of a
+  non-positive number, `1/x` of zero, factorial of a negative or non-integer). Solved by having
+  each case in `applyUnary()` check its own domain and fall back to displaying `"Error"` rather
+  than letting `NaN` or `Infinity` propagate into the display or get saved to `localStorage`.

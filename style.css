@@ -86,19 +86,33 @@ body {
   font-weight: 600;
 }
 
-#theme-toggle {
+.top-bar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#theme-toggle,
+#sci-toggle {
   border: none;
   background: var(--function-bg);
   border-radius: 10px;
-  width: 36px;
+  min-width: 36px;
   height: 36px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s ease;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: var(--text);
+  padding: 0 8px;
 }
 
-#theme-toggle:hover {
+#theme-toggle:hover,
+#sci-toggle:hover {
   background: var(--function-hover);
+}
+
+#sci-toggle.active {
+  background: var(--operator-bg);
+  color: var(--operator-text);
 }
 
 .display {
@@ -129,10 +143,24 @@ body {
   white-space: nowrap;
 }
 
-.buttons {
+.buttons,
+.sci-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+}
+
+.sci-buttons {
+  margin-bottom: 16px;
+}
+
+.sci-buttons.hidden {
+  display: none;
+}
+
+.btn.sci {
+  padding: 12px 0;
+  font-size: 15px;
 }
 
 .btn {

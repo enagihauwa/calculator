@@ -11,12 +11,35 @@
     <div class="calculator">
       <div class="top-bar">
         <h1>Calculator</h1>
-        <button id="theme-toggle" title="Toggle theme">🌙</button>
+        <div class="top-bar-actions">
+          <button id="sci-toggle" title="Toggle scientific functions">xʸ</button>
+          <button id="theme-toggle" title="Toggle theme">🌙</button>
+        </div>
       </div>
 
       <div class="display">
         <div id="expression" class="expression"></div>
         <div id="result" class="result">0</div>
+      </div>
+
+      <div id="sci-buttons" class="sci-buttons hidden">
+        <button class="btn sci" data-action="unary" data-value="sin">sin</button>
+        <button class="btn sci" data-action="unary" data-value="cos">cos</button>
+        <button class="btn sci" data-action="unary" data-value="tan">tan</button>
+        <button class="btn sci function" id="angle-toggle" data-action="toggle-angle">DEG</button>
+
+        <button class="btn sci" data-action="unary" data-value="log">log</button>
+        <button class="btn sci" data-action="unary" data-value="ln">ln</button>
+        <button class="btn sci" data-action="unary" data-value="sqrt">√x</button>
+        <button class="btn sci" data-action="unary" data-value="square">x²</button>
+
+        <button class="btn sci operator" data-action="operator" data-value="^">xʸ</button>
+        <button class="btn sci" data-action="unary" data-value="reciprocal">1/x</button>
+        <button class="btn sci" data-action="unary" data-value="pi">π</button>
+        <button class="btn sci" data-action="unary" data-value="e">e</button>
+
+        <button class="btn sci wide" data-action="unary" data-value="factorial">n!</button>
+        <button class="btn sci wide" data-action="unary" data-value="negate">±</button>
       </div>
 
       <div class="buttons">

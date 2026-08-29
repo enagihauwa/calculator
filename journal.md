@@ -43,5 +43,47 @@
   the current one.
 
 ### Next steps / ideas (not yet implemented)
-- Consider adding scientific functions (sqrt, power, etc.) if the scope expands.
 - Consider adding unit tests for the `compute()` and `formatNumber()` functions.
+
+## 2026-08-29 (later) — Scientific functions
+
+### What I worked on
+- Expanded scope to a scientific calculator: added a collapsible "Sci" panel (toggled via a new
+  `xʸ` button in the top bar) containing `sin`, `cos`, `tan`, `log`, `ln`, `√x`, `x²`, `xʸ`, `1/x`,
+  `π`, `e`, `n!`, `±`, and a `DEG`/`RAD` toggle.
+- Implemented unary operations (`sqrt`, `square`, `reciprocal`, `log`, `ln`, `sin`, `cos`, `tan`,
+  `factorial`, `negate`, `pi`, `e`) via a single `applyUnary()` function, keeping them consistent
+  with the existing state model (`current`, `overwrite`).
+- Added `xʸ` (power) as a binary operator alongside `+ - * /`, handled by adding a `"^"` case to
+  the existing `compute()` switch — no new code paths needed for chaining or `=`.
+- Added degrees/radians support for trig functions, defaulting to degrees, with the mode
+  persisted in the same `calculator.state` object already used for the rest of the calculator.
+- Persisted whether the scientific panel is open/closed in a new `calculator.sciOpen`
+  `localStorage` key, so the UI stays in the state the user left it in.
+
+### Decisions made
+- Treated the scientific panel as **collapsible and off by default** rather than always visible,
+  to keep the basic calculator uncluttered for users who don't need it.
+- Reused the existing `overwrite` state flag for unary results (same as pressing `=`), so typing a
+  new number after e.g. `√x` starts fresh instead of appending digits.
+- Put `xʸ` (power) through the same operator/compute pipeline as `+ - * /` instead of writing a
+  separate code path, since it behaves identically as a binary operation.
+- Defaulted trig functions to degrees (more intuitive for most casual users) with an explicit
+  `DEG`/`RAD` toggle rather than silently assuming radians.
+
+### Challenges & solutions
+- **Ambiguity of sin/cos/tan input units** → added an explicit angle-mode toggle (`DEG`/`RAD`)
+  stored in state, converting degrees to radians internally before calling `Math.sin/cos/tan`,
+  so results are correct and predictable regardless of mode.
+- **Invalid inputs to unary functions** (e.g. `sqrt` of a negative number, `log`/`ln` of a
+  non-positive number, `1/x` of zero, `n!` of a negative or non-integer) → each case explicitly
+  checks its domain and falls back to an `"Error"` display via the existing
+  `Number.isFinite(result)` guard, rather than letting `NaN`/`Infinity` leak into the display or
+  into `localStorage`.
+- **Keeping the 4-column button grid layout consistent** when adding many new buttons → reused
+  the existing `.buttons` grid CSS for a second `.sci-buttons` grid rather than inventing a new
+  layout system, and reused the existing `.wide` (2-column span) class for `n!` and `±`.
+
+### Next steps / ideas (not yet implemented)
+- Consider unit tests for `applyUnary()`, `factorial()`, and the degree/radian conversion.
+- Consider a memory feature (`M+`, `M-`, `MR`, `MC`) if scope expands further.
