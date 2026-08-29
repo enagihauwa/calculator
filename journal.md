@@ -86,4 +86,39 @@
 
 ### Next steps / ideas (not yet implemented)
 - Consider unit tests for `applyUnary()`, `factorial()`, and the degree/radian conversion.
-- Consider a memory feature (`M+`, `M-`, `MR`, `MC`) if scope expands further.
+
+## 2026-08-29 (later still) — Memory feature
+
+### What I worked on
+- Added a standard calculator memory feature: `MC` (memory clear), `MR` (memory recall), `M+`
+  (memory add), `M-` (memory subtract), as an always-visible row between the display and the
+  scientific panel.
+- Added a small "M" indicator badge in the display that appears whenever the stored memory value
+  is non-zero, so it's always clear when memory holds something.
+- Persisted the memory value as a `memory` field on the existing `calculator.state` object —
+  no new `localStorage` key needed since it's part of the same in-progress-calculation state.
+
+### Decisions made
+- Made the memory row **always visible** rather than tucking it inside the collapsible scientific
+  panel, since memory recall/store is a standard everyday calculator feature, not an advanced one.
+- `AC` (clear-all) intentionally does **not** clear memory — only `MC` does. This matches how
+  physical and OS calculators behave: clearing the current calculation shouldn't wipe a value the
+  user deliberately stored. This required changing `clearAll()` to spread the existing state
+  (`{ ...state, ... }`) instead of replacing it outright, so `memory` and `angleMode` survive an
+  `AC` press.
+- `M+`/`M-`/`MR` set the `overwrite` flag (same convention used after `=` and unary functions), so
+  typing a new digit afterward starts a fresh number instead of appending to whatever was on
+  screen.
+
+### Challenges & solutions
+- **`clearAll()` previously replaced the whole state object**, which would have silently reset
+  `memory` (and `angleMode`) back to defaults every time the user pressed `AC` — a subtle bug that
+  would only show up once memory support was added. Solved by switching `clearAll()` to spread the
+  current state and only override the calculation-related fields.
+- **Showing memory status without cluttering the display** → a compact bordered "M" badge that
+  toggles visibility based on `!!state.memory`, reusing the existing `render()` pass so it never
+  gets out of sync with the actual stored value.
+
+### Next steps / ideas (not yet implemented)
+- Consider unit tests for `applyUnary()`, `factorial()`, `handleMemory()`, and the degree/radian
+  conversion.

@@ -13,6 +13,7 @@ const clearHistoryBtn = document.getElementById("clear-history");
 const sciToggleBtn = document.getElementById("sci-toggle");
 const sciButtonsEl = document.getElementById("sci-buttons");
 const angleToggleBtn = document.getElementById("angle-toggle");
+const memoryIndicatorEl = document.getElementById("memory-indicator");
 
 let state = {
   current: "0",
@@ -20,6 +21,7 @@ let state = {
   operator: null,
   overwrite: false,
   angleMode: "deg",
+  memory: 0,
 };
 
 let history = [];
@@ -31,7 +33,14 @@ function loadState() {
       state = { ...state, ...saved };
     }
   } catch (e) {
-    state = { current: "0", previous: null, operator: null, overwrite: false, angleMode: "deg" };
+    state = {
+      current: "0",
+      previous: null,
+      operator: null,
+      overwrite: false,
+      angleMode: "deg",
+      memory: 0,
+    };
   }
   angleToggleBtn.textContent = state.angleMode.toUpperCase();
 }
@@ -173,6 +182,30 @@ function render() {
   } else {
     expressionEl.textContent = "";
   }
+  memoryIndicatorEl.classList.toggle("hidden", !state.memory);
+}
+
+function handleMemory(action) {
+  const value = Number(state.current);
+  switch (action) {
+    case "clear":
+      state.memory = 0;
+      break;
+    case "recall":
+      state.current = String(state.memory);
+      state.overwrite = true;
+      break;
+    case "add":
+      state.memory += value;
+      state.overwrite = true;
+      break;
+    case "subtract":
+      state.memory -= value;
+      state.overwrite = true;
+      break;
+  }
+  saveState();
+  render();
 }
 
 function inputNumber(digit) {
@@ -202,7 +235,7 @@ function inputDecimal() {
 }
 
 function clearAll() {
-  state = { current: "0", previous: null, operator: null, overwrite: false };
+  state = { ...state, current: "0", previous: null, operator: null, overwrite: false };
   saveState();
   render();
 }
@@ -326,6 +359,7 @@ document.querySelectorAll(".btn").forEach((btn) => {
     else if (action === "equals") equals();
     else if (action === "unary") applyUnary(value);
     else if (action === "toggle-angle") toggleAngleMode();
+    else if (action === "memory") handleMemory(value);
   });
 });
 

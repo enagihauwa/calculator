@@ -128,6 +128,26 @@ body {
   overflow: hidden;
 }
 
+.display-top {
+  min-height: 16px;
+  text-align: left;
+}
+
+.memory-indicator {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--operator-bg);
+  border: 1px solid var(--operator-bg);
+  border-radius: 4px;
+  padding: 0 5px;
+  line-height: 16px;
+}
+
+.memory-indicator.hidden {
+  display: none;
+}
+
 .expression {
   color: var(--muted);
   font-size: 14px;
@@ -144,10 +164,15 @@ body {
 }
 
 .buttons,
-.sci-buttons {
+.sci-buttons,
+.memory-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+}
+
+.memory-buttons {
+  margin-bottom: 12px;
 }
 
 .sci-buttons {

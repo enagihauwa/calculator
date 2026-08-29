@@ -18,8 +18,18 @@
       </div>
 
       <div class="display">
+        <div class="display-top">
+          <span id="memory-indicator" class="memory-indicator hidden">M</span>
+        </div>
         <div id="expression" class="expression"></div>
         <div id="result" class="result">0</div>
+      </div>
+
+      <div class="memory-buttons">
+        <button class="btn function" data-action="memory" data-value="clear">MC</button>
+        <button class="btn function" data-action="memory" data-value="recall">MR</button>
+        <button class="btn function" data-action="memory" data-value="add">M+</button>
+        <button class="btn function" data-action="memory" data-value="subtract">M-</button>
       </div>
 
       <div id="sci-buttons" class="sci-buttons hidden">

@@ -4,9 +4,9 @@
 
 A browser-based calculator built with plain HTML, CSS, and JavaScript. It supports the four basic
 arithmetic operations, percentages, a collapsible scientific mode (square root, powers, trig
-functions, logarithms, factorial, and constants), keyboard input, a light/dark theme toggle, and a
-calculation history — all of which persist between visits using the browser's Web Storage
-(`localStorage`).
+functions, logarithms, factorial, and constants), a memory feature (`MC`/`MR`/`M+`/`M-`), keyboard
+input, a light/dark theme toggle, and a calculation history — all of which persist between visits
+using the browser's Web Storage (`localStorage`).
 
 ## Who it's for
 
@@ -59,6 +59,12 @@ presentation, behavior — stays independent and easy to maintain.
   radians is a common source of "wrong answer" bugs in simple calculators; degrees are more
   intuitive for casual use, and the mode is shown on the toggle button itself so it's never
   ambiguous which one is active.
+- **Memory row kept always visible, not hidden behind the scientific panel.** `MC`/`MR`/`M+`/`M-`
+  is a standard everyday feature, not an advanced one, so it stays reachable regardless of whether
+  scientific mode is open.
+- **`AC` (clear-all) does not clear memory — only `MC` does.** Matches conventional calculator
+  behavior: clearing the current calculation shouldn't discard a value the user deliberately
+  stored.
 
 ## Challenges encountered and how they were solved
 
@@ -81,3 +87,6 @@ presentation, behavior — stays independent and easy to maintain.
   non-positive number, `1/x` of zero, factorial of a negative or non-integer). Solved by having
   each case in `applyUnary()` check its own domain and fall back to displaying `"Error"` rather
   than letting `NaN` or `Infinity` propagate into the display or get saved to `localStorage`.
+- **`AC` silently resetting memory.** `clearAll()` originally replaced the entire state object,
+  which would have wiped `memory` (and `angleMode`) every time `AC` was pressed. Fixed by spreading
+  the existing state (`{ ...state, ... }`) and only overriding the calculation-related fields.
