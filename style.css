@@ -279,6 +279,12 @@ body {
   color: #1c1e26;
 }
 
+[data-theme="dark"] .theme-label,
+[data-theme="ocean"] .theme-label,
+[data-theme="sunset"] .theme-label {
+  color: #ffffff;
+}
+
 /* =============================================
    DISPLAY
    ============================================= */
