@@ -279,9 +279,9 @@ body {
   color: #000000;
 }
 
-[data-theme="dark"] .theme-label,
-[data-theme="ocean"] .theme-label,
-[data-theme="sunset"] .theme-label {
+html[data-theme="dark"] .theme-label,
+html[data-theme="ocean"] .theme-label,
+html[data-theme="sunset"] .theme-label {
   color: #ffffff;
 }
 
