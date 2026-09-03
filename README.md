@@ -5,8 +5,8 @@
 A browser-based calculator built with plain HTML, CSS, and JavaScript. It supports the four basic
 arithmetic operations, percentages, a collapsible scientific mode (square root, powers, trig
 functions, logarithms, factorial, and constants), a memory feature (`MC`/`MR`/`M+`/`M-`), keyboard
-input, a light/dark theme toggle, and a calculation history — all of which persist between visits
-using the browser's Web Storage (`localStorage`).
+input, a multi-theme system (Light, Dark, Ocean, Sunset), and a calculation history — all of which
+persist between visits using the browser's Web Storage (`localStorage`).
 
 ## Who it's for
 
@@ -24,8 +24,9 @@ picks up exactly where you left off.
 ## Technologies and tools used
 
 - **HTML** — structure/markup (`index.html`)
-- **CSS** — styling via **CSS custom properties** (`:root` variables) for theming, with a
-  `[data-theme="dark"]` override block for dark mode (`style.css`)
+- **CSS** — styling via **CSS custom properties** (`:root` variables) for theming, with
+  `[data-theme]` override blocks for each of the four themes: light, dark, ocean, and sunset
+  (`style.css`)
 - **JavaScript (vanilla, no frameworks)** — calculator logic, event handling, and persistence
   (`script.js`)
 - **Web Storage API (`localStorage`)** — persists calculator state, history, and theme
@@ -37,8 +38,8 @@ presentation, behavior — stays independent and easy to maintain.
 
 - **CSS variables over a framework.** Tailwind or a CSS-in-JS approach were options, but plain CSS
   with custom properties was chosen so the project has zero build tooling and zero external
-  dependencies — it runs by just opening `index.html`. Variables still make theming (light/dark)
-  and future re-skinning straightforward.
+  dependencies — it runs by just opening `index.html`. Variables still make theming (light, dark,
+  ocean, sunset) and future re-skinning straightforward.
 - **No `eval()` for math.** Rather than evaluating typed expressions as strings, the calculator
   tracks `previous`, `operator`, and `current` values explicitly and computes results with a
   `switch` statement. This avoids the security and correctness risks of evaluating arbitrary
@@ -65,6 +66,14 @@ presentation, behavior — stays independent and easy to maintain.
 - **`AC` (clear-all) does not clear memory — only `MC` does.** Matches conventional calculator
   behavior: clearing the current calculation shouldn't discard a value the user deliberately
   stored.
+- **Four themes with a selector panel instead of a simple toggle.** A two-state light/dark toggle
+  was the original approach, but expanding to four themes (light, dark, ocean, sunset) required a
+  proper selector UI. A small dropdown panel with circular color previews was chosen over a
+  dropdown/select element so the user can see each theme's palette before applying it. The panel
+  opens on button click, closes on selection or clicking outside, and the active theme is indicated
+  with a highlighted border.
+- **Keyboard shortcut `Ctrl+Shift+T` for cycling themes.** Provides a fast way to browse themes
+  without opening the panel, cycling through light → dark → ocean → sunset → light.
 
 ## Challenges encountered and how they were solved
 
@@ -90,3 +99,8 @@ presentation, behavior — stays independent and easy to maintain.
 - **`AC` silently resetting memory.** `clearAll()` originally replaced the entire state object,
   which would have wiped `memory` (and `angleMode`) every time `AC` was pressed. Fixed by spreading
   the existing state (`{ ...state, ... }`) and only overriding the calculation-related fields.
+- **Theme preview circles blending into the panel background in light mode.** The circular color
+  previews used a `1px solid rgba(0,0,0,0.1)` border that was nearly invisible against the white
+  panel. Solved by switching to `2px solid var(--border)` so the border uses the theme's own border
+  color, making it visible regardless of which theme is active. Theme labels were also bumped from
+  `font-weight: 500` to `600` for better readability.

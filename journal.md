@@ -122,3 +122,55 @@
 ### Next steps / ideas (not yet implemented)
 - Consider unit tests for `applyUnary()`, `factorial()`, `handleMemory()`, and the degree/radian
   conversion.
+
+## 2026-09-03 — Multi-theme system
+
+### What I worked on
+- Expanded the theme system from a two-state light/dark toggle to a four-theme selector supporting
+  Light, Dark, Ocean, and Sunset themes.
+- Added two new CSS variable blocks: `[data-theme="ocean"]` (deep navy backgrounds, sky-blue
+  operators, teal equals) and `[data-theme="sunset"]` (dark purple backgrounds, amber operators,
+  orange equals). Each block defines the same set of custom properties so all themed elements
+  transition smoothly.
+- Replaced the single `#theme-toggle` button (which toggled between light/dark) with a `🎨` button
+  that opens a theme selector panel. The panel contains four option buttons, each showing a circular
+  color preview and a label. The active theme is highlighted with a colored border matching the
+  theme's accent.
+- Added `applyTheme(theme)` to set the `data-theme` attribute, persist the choice to `localStorage`,
+  and update the active indicator. Added `cycleTheme()` to loop through themes in order for the
+  keyboard shortcut.
+- Implemented a `Ctrl+Shift+T` keyboard shortcut that cycles through all four themes without
+  opening the panel.
+- Added click-outside-to-close behavior for the theme panel so it dismisses naturally.
+- Added three new CSS custom properties (`--theme-panel-bg`, `--theme-panel-border`,
+  `--theme-option-active-border`) to each theme block, so the panel itself adapts its background,
+  border, and active indicator color per theme.
+- Improved theme selector visibility in light mode by switching the preview circle border from
+  `1px solid rgba(0,0,0,0.1)` to `2px solid var(--border)` and bumping label font-weight to `600`.
+
+### Decisions made
+- Chose a selector panel with visual previews over a `<select>` dropdown so users can see each
+  theme's color palette before choosing it — more informative and more visually consistent with the
+  calculator's design.
+- Placed the panel as an absolutely-positioned element inside `.app` (which has `position: relative`)
+  so it overlays the calculator without affecting layout.
+- Kept the same `calculator.theme` localStorage key and just changed the stored values from
+  `"light"`/`"dark"` to any of the four valid theme names, maintaining backward compatibility
+  (a saved `"light"` or `"dark"` value still works; unknown values fall back to `"light"`).
+- Used a `VALID_THEMES` array and `indexOf` + modular arithmetic for `cycleTheme()` so adding a
+  fifth theme later only requires adding it to the array and its CSS block — no logic changes
+  needed.
+
+### Challenges & solutions
+- **Theme preview circles invisible in light mode** → the `1px solid rgba(0,0,0,0.1)` border was
+  too faint against the white panel background, and the light theme preview showed `#ffffff` which
+  blended in. Solved by using `2px solid var(--border)` so the border color adapts to each theme,
+  and bumping label font-weight for readability.
+- **Panel positioning** → needed the panel to float above the calculator without pushing other
+  elements around. Solved by adding `position: relative` to `.app` and using `position: absolute`
+  with `top`/`right` on the panel.
+
+### Next steps / ideas (not yet implemented)
+- Consider adding a fifth "high contrast" or "pastel" theme.
+- Consider adding theme transition animations on individual elements (e.g. a brief flash or fade)
+  rather than relying solely on CSS transition properties.
