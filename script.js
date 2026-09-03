@@ -1,3 +1,7 @@
+/* =============================================
+   STORAGE KEYS
+   ============================================= */
+
 const STORAGE_KEYS = {
   state: "calculator.state",
   history: "calculator.history",
@@ -5,15 +9,28 @@ const STORAGE_KEYS = {
   sciOpen: "calculator.sciOpen",
 };
 
+/* =============================================
+   DOM REFERENCES
+   ============================================= */
+
 const expressionEl = document.getElementById("expression");
 const resultEl = document.getElementById("result");
 const historyListEl = document.getElementById("history-list");
 const themeToggleBtn = document.getElementById("theme-toggle");
+const themePanel = document.getElementById("theme-panel");
+const themePanelClose = document.getElementById("theme-panel-close");
+const themeOptions = document.querySelectorAll(".theme-option");
 const clearHistoryBtn = document.getElementById("clear-history");
 const sciToggleBtn = document.getElementById("sci-toggle");
 const sciButtonsEl = document.getElementById("sci-buttons");
 const angleToggleBtn = document.getElementById("angle-toggle");
 const memoryIndicatorEl = document.getElementById("memory-indicator");
+
+const VALID_THEMES = ["light", "dark", "ocean", "sunset"];
+
+/* =============================================
+   CALCULATOR STATE
+   ============================================= */
 
 let state = {
   current: "0",
@@ -25,6 +42,10 @@ let state = {
 };
 
 let history = [];
+
+/* =============================================
+   STATE PERSISTENCE
+   ============================================= */
 
 function loadState() {
   try {
@@ -62,24 +83,46 @@ function saveHistory() {
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
 }
 
+/* =============================================
+   THEME SYSTEM
+   - 4 themes: light, dark, ocean, sunset
+   - Persists selection in localStorage
+   - Updates CSS custom properties via data-theme attribute
+   - Keyboard shortcut: Ctrl+Shift+T cycles through themes
+   ============================================= */
+
 function loadTheme() {
-  const theme = localStorage.getItem(STORAGE_KEYS.theme);
-  if (theme === "dark") {
-    document.documentElement.setAttribute("data-theme", "dark");
-    themeToggleBtn.textContent = "☀️";
-  } else {
-    document.documentElement.setAttribute("data-theme", "light");
-    themeToggleBtn.textContent = "🌙";
-  }
+  const saved = localStorage.getItem(STORAGE_KEYS.theme);
+  const theme = VALID_THEMES.includes(saved) ? saved : "light";
+  applyTheme(theme);
 }
 
-function toggleTheme() {
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const next = isDark ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", next);
-  themeToggleBtn.textContent = isDark ? "🌙" : "☀️";
-  localStorage.setItem(STORAGE_KEYS.theme, next);
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem(STORAGE_KEYS.theme, theme);
+  updateThemePanelActive(theme);
 }
+
+function updateThemePanelActive(activeTheme) {
+  themeOptions.forEach((opt) => {
+    opt.classList.toggle("active", opt.dataset.theme === activeTheme);
+  });
+}
+
+function toggleThemePanel() {
+  themePanel.classList.toggle("hidden");
+}
+
+function cycleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "light";
+  const idx = VALID_THEMES.indexOf(current);
+  const next = VALID_THEMES[(idx + 1) % VALID_THEMES.length];
+  applyTheme(next);
+}
+
+/* =============================================
+   SCIENTIFIC PANEL
+   ============================================= */
 
 function loadSciPanel() {
   const isOpen = localStorage.getItem(STORAGE_KEYS.sciOpen) === "true";
@@ -99,6 +142,10 @@ function toggleAngleMode() {
   angleToggleBtn.textContent = state.angleMode.toUpperCase();
   saveState();
 }
+
+/* =============================================
+   CALCULATOR LOGIC
+   ============================================= */
 
 const OP_SYMBOLS = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "^" };
 
@@ -316,6 +363,10 @@ function equals() {
   render();
 }
 
+/* =============================================
+   HISTORY
+   ============================================= */
+
 function renderHistory() {
   historyListEl.innerHTML = "";
   if (history.length === 0) {
@@ -346,6 +397,11 @@ function clearHistory() {
   renderHistory();
 }
 
+/* =============================================
+   EVENT LISTENERS
+   ============================================= */
+
+// Button clicks (calculator actions)
 document.querySelectorAll(".btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const action = btn.dataset.action;
@@ -363,11 +419,41 @@ document.querySelectorAll(".btn").forEach((btn) => {
   });
 });
 
-themeToggleBtn.addEventListener("click", toggleTheme);
+// Theme panel toggle
+themeToggleBtn.addEventListener("click", toggleThemePanel);
+themePanelClose.addEventListener("click", toggleThemePanel);
+
+// Theme option selection
+themeOptions.forEach((opt) => {
+  opt.addEventListener("click", () => {
+    applyTheme(opt.dataset.theme);
+    toggleThemePanel();
+  });
+});
+
+// History & sci panel
 clearHistoryBtn.addEventListener("click", clearHistory);
 sciToggleBtn.addEventListener("click", toggleSciPanel);
 
+// Close theme panel when clicking outside
+document.addEventListener("click", (e) => {
+  if (
+    !themePanel.classList.contains("hidden") &&
+    !themePanel.contains(e.target) &&
+    e.target !== themeToggleBtn
+  ) {
+    themePanel.classList.add("hidden");
+  }
+});
+
+// Keyboard shortcuts
 document.addEventListener("keydown", (e) => {
+  // Ctrl+Shift+T: cycle through themes
+  if (e.ctrlKey && e.shiftKey && e.key === "T") {
+    e.preventDefault();
+    cycleTheme();
+    return;
+  }
   if (e.key >= "0" && e.key <= "9") inputNumber(e.key);
   else if (e.key === ".") inputDecimal();
   else if (["+", "-", "*", "/"].includes(e.key)) chooseOperator(e.key);
@@ -376,6 +462,10 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "Escape") clearAll();
   else if (e.key === "%") toPercent();
 });
+
+/* =============================================
+   INITIALIZATION
+   ============================================= */
 
 loadTheme();
 loadState();

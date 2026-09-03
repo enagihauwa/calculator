@@ -13,7 +13,33 @@
         <h1>Calculator</h1>
         <div class="top-bar-actions">
           <button id="sci-toggle" title="Toggle scientific functions">xʸ</button>
-          <button id="theme-toggle" title="Toggle theme">🌙</button>
+          <button id="theme-toggle" title="Open theme selector">🎨</button>
+        </div>
+      </div>
+
+      <!-- Theme Selector Panel -->
+      <div id="theme-panel" class="theme-panel hidden">
+        <div class="theme-panel-header">
+          <span>Choose Theme</span>
+          <button id="theme-panel-close" title="Close">&times;</button>
+        </div>
+        <div class="theme-options">
+          <button class="theme-option" data-theme="light" title="Light theme">
+            <span class="theme-preview" style="background: linear-gradient(135deg, #ffffff 50%, #4f6bed 50%)"></span>
+            <span class="theme-label">Light</span>
+          </button>
+          <button class="theme-option" data-theme="dark" title="Dark theme">
+            <span class="theme-preview" style="background: linear-gradient(135deg, #1a1d29 50%, #5b7cfa 50%)"></span>
+            <span class="theme-label">Dark</span>
+          </button>
+          <button class="theme-option" data-theme="ocean" title="Ocean theme">
+            <span class="theme-preview" style="background: linear-gradient(135deg, #0a2540 50%, #0ea5e9 50%)"></span>
+            <span class="theme-label">Ocean</span>
+          </button>
+          <button class="theme-option" data-theme="sunset" title="Sunset theme">
+            <span class="theme-preview" style="background: linear-gradient(135deg, #2d1b3d 50%, #f59e0b 50%)"></span>
+            <span class="theme-label">Sunset</span>
+          </button>
         </div>
       </div>
 

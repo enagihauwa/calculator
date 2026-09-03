@@ -1,4 +1,11 @@
+/* =============================================
+   THEME DEFINITIONS
+   All colors are managed via CSS custom properties.
+   Only one theme block is active at a time via [data-theme].
+   ============================================= */
+
 :root {
+  /* Light Theme (default) */
   --bg: #eef1f8;
   --app-bg: #ffffff;
   --text: #1c1e26;
@@ -17,6 +24,9 @@
   --border: #dfe3ee;
   --shadow: 0 10px 30px rgba(20, 24, 40, 0.08);
   --radius: 16px;
+  --theme-panel-bg: #ffffff;
+  --theme-panel-border: #dfe3ee;
+  --theme-option-active-border: #4f6bed;
 }
 
 [data-theme="dark"] {
@@ -37,7 +47,60 @@
   --function-hover: #343a4d;
   --border: #2a2e3d;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --theme-panel-bg: #1a1d29;
+  --theme-panel-border: #2a2e3d;
+  --theme-option-active-border: #5b7cfa;
 }
+
+[data-theme="ocean"] {
+  --bg: #0c1929;
+  --app-bg: #0f2137;
+  --text: #e8f4f8;
+  --muted: #7eacc1;
+  --display-bg: #091a2a;
+  --btn-bg: #14304a;
+  --btn-hover: #1a3d5e;
+  --btn-active: #204a72;
+  --operator-bg: #0ea5e9;
+  --operator-hover: #0284c7;
+  --operator-text: #ffffff;
+  --equals-bg: #14b8a6;
+  --equals-hover: #0d9488;
+  --function-bg: #162d48;
+  --function-hover: #1e3d5e;
+  --border: #1a3550;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --theme-panel-bg: #0f2137;
+  --theme-panel-border: #1a3550;
+  --theme-option-active-border: #0ea5e9;
+}
+
+[data-theme="sunset"] {
+  --bg: #1f1225;
+  --app-bg: #2d1b3d;
+  --text: #f5ede8;
+  --muted: #c4a6b8;
+  --display-bg: #241533;
+  --btn-bg: #3d2452;
+  --btn-hover: #4e3068;
+  --btn-active: #5e3c7e;
+  --operator-bg: #f59e0b;
+  --operator-hover: #d97706;
+  --operator-text: #1f1225;
+  --equals-bg: #f97316;
+  --equals-hover: #ea580c;
+  --function-bg: #352049;
+  --function-hover: #452c60;
+  --border: #4a2d62;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --theme-panel-bg: #2d1b3d;
+  --theme-panel-border: #4a2d62;
+  --theme-option-active-border: #f59e0b;
+}
+
+/* =============================================
+   GLOBAL RESET & BASE
+   ============================================= */
 
 * {
   box-sizing: border-box;
@@ -52,9 +115,13 @@ body {
   background: var(--bg);
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--text);
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background 0.35s ease, color 0.35s ease;
   padding: 24px;
 }
+
+/* =============================================
+   APP & CALCULATOR LAYOUT
+   ============================================= */
 
 .app {
   display: flex;
@@ -62,6 +129,7 @@ body {
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
+  position: relative;
 }
 
 .calculator {
@@ -70,8 +138,12 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 20px;
-  transition: background 0.25s ease;
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
+
+/* =============================================
+   TOP BAR
+   ============================================= */
 
 .top-bar {
   display: flex;
@@ -115,6 +187,102 @@ body {
   color: var(--operator-text);
 }
 
+/* =============================================
+   THEME SELECTOR PANEL
+   ============================================= */
+
+.theme-panel {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: var(--theme-panel-bg);
+  border: 1px solid var(--theme-panel-border);
+  border-radius: 14px;
+  padding: 14px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  min-width: 200px;
+  transition: background 0.35s ease, border-color 0.35s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.theme-panel.hidden {
+  display: none;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.theme-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#theme-panel-close {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+#theme-panel-close:hover {
+  color: var(--text);
+}
+
+.theme-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.theme-option:hover {
+  transform: scale(1.05);
+}
+
+.theme-option.active {
+  border-color: var(--theme-option-active-border);
+  box-shadow: 0 0 0 1px var(--theme-option-active-border);
+}
+
+.theme-preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.theme-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* =============================================
+   DISPLAY
+   ============================================= */
+
 .display {
   background: var(--display-bg);
   border-radius: 12px;
@@ -126,6 +294,7 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
+  transition: background 0.35s ease;
 }
 
 .display-top {
@@ -163,6 +332,10 @@ body {
   white-space: nowrap;
 }
 
+/* =============================================
+   BUTTON GRIDS
+   ============================================= */
+
 .buttons,
 .sci-buttons,
 .memory-buttons {
@@ -188,6 +361,10 @@ body {
   font-size: 15px;
 }
 
+/* =============================================
+   BUTTONS
+   ============================================= */
+
 .btn {
   border: none;
   background: var(--btn-bg);
@@ -197,7 +374,7 @@ body {
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.05s ease;
   border: 1px solid var(--border);
 }
 
@@ -242,6 +419,10 @@ body {
   background: var(--equals-hover);
 }
 
+/* =============================================
+   HISTORY PANEL
+   ============================================= */
+
 .history-panel {
   width: 240px;
   background: var(--app-bg);
@@ -251,6 +432,7 @@ body {
   max-height: 460px;
   display: flex;
   flex-direction: column;
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 
 .history-header {
