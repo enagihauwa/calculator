@@ -30,9 +30,11 @@ picks up exactly where you left off.
 - **JavaScript (vanilla, no frameworks)** — calculator logic, event handling, and persistence
   (`script.js`)
 - **Web Storage API (`localStorage`)** — persists calculator state, history, and theme
+- **SVG favicon** — a vector calculator icon (`favicon.svg`) linked via `<link rel="icon">`, so
+  the browser tab shows an app icon without any binary `.ico` asset or build step
 
-The three files are kept fully separate (no inline styles or scripts) so each concern — markup,
-presentation, behavior — stays independent and easy to maintain.
+The three core files are kept fully separate (no inline styles or scripts) so each concern —
+markup, presentation, behavior — stays independent and easy to maintain.
 
 ## Important decisions
 
@@ -71,9 +73,14 @@ presentation, behavior — stays independent and easy to maintain.
   proper selector UI. A small dropdown panel with circular color previews was chosen over a
   dropdown/select element so the user can see each theme's palette before applying it. The panel
   opens on button click, closes on selection or clicking outside, and the active theme is indicated
-  with a highlighted border.
+  with a highlighted border. It's anchored to the history panel (via `position: relative` on
+  `.history-panel` and `top: calc(100% + 12px)` on the panel) so it drops down *below* the history
+  container rather than covering the calculator or the history list.
 - **Keyboard shortcut `Ctrl+Shift+T` for cycling themes.** Provides a fast way to browse themes
   without opening the panel, cycling through light → dark → ocean → sunset → light.
+- **SVG favicon over a raster `.ico`.** A vector icon stays crisp at any tab/favorite size, is
+  readable and editable as plain text, and keeps the project free of binary assets and build
+  tooling.
 
 ## Challenges encountered and how they were solved
 
@@ -104,3 +111,10 @@ presentation, behavior — stays independent and easy to maintain.
   panel. Solved by switching to `2px solid var(--border)` so the border uses the theme's own border
   color, making it visible regardless of which theme is active. Theme labels were also bumped from
   `font-weight: 500` to `600` for better readability.
+- **Theme panel covering the history list.** The panel was absolutely positioned against `.app`
+  with `right: 20px` and `top: 60px`, which landed it on top of the history panel. Solved by moving
+  the panel into the history panel's container, giving that container `position: relative`, and
+  anchoring the panel below it (`top: calc(100% + 12px); right: 0`), so it now drops down under the
+  history list without overlapping either the calculator or the history container. Because the JS
+  looks the panel up by ID and the outside-click test uses `themePanel.contains()`, the move
+  required no JavaScript changes.

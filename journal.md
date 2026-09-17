@@ -174,3 +174,38 @@
 - Consider adding a fifth "high contrast" or "pastel" theme.
 - Consider adding theme transition animations on individual elements (e.g. a brief flash or fade)
   rather than relying solely on CSS transition properties.
+
+## 2026-09-18 — Theme panel placement & favicon
+
+### What I worked on
+- Moved the theme selector panel out of the calculator and into the history panel's container so it
+  renders directly *beneath* the history list instead of overlapping it.
+- Gave `.history-panel` `position: relative` and re-anchored `.theme-panel` with
+  `top: calc(100% + 12px); right: 0`, so the panel hangs below the history container.
+- Added an SVG favicon (`favicon.svg`): a rounded calculator body in the app's operator blue with a
+  light display screen, a grid of button dots, and a green (`#2fbf71`) equals key. Linked it from
+  `index.html` via `<link rel="icon" type="image/svg+xml" href="favicon.svg">`.
+- Re-verified the theme panel's open button, close button, option selection, and click-outside
+  dismissal all still work after moving it in the DOM.
+
+### Decisions made
+- Anchored the panel to the history panel rather than the whole `.app`, so it drops below the
+  history container and never covers the calculator buttons or the history entries.
+- Chose an SVG favicon over a raster `.ico` so it stays crisp at any size, remains human-readable
+  and editable as text, and needs no binary asset or build step.
+
+### Challenges & solutions
+- **Theme panel overlapping the history panel** → the panel was absolutely positioned against
+  `.app` (which is `position: relative`) with `top: 60px; right: 20px`, which placed it over the
+  history container. Fixed by moving `#theme-panel` into `.history-panel`, giving that container
+  `position: relative`, and positioning the panel below it (`top: calc(100% + 12px); right: 0`), so
+  it no longer overlaps either panel.
+- **Keeping the JS working after the DOM move** → the panel and its controls are looked up by ID
+  (`getElementById`) and the outside-click check uses `themePanel.contains(e.target)`, so
+  relocating the panel required **no JavaScript changes** — only the HTML placement and two CSS
+  rules changed.
+
+### Next steps / ideas (not yet implemented)
+- Consider adding an `apple-touch-icon` / maskable PNG variant for home-screen bookmarks.
+- Consider constraining the theme panel's `max-height` and letting it scroll on very short
+  viewports now that it opens downward from the history panel.
