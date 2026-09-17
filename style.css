@@ -193,8 +193,8 @@ body {
 
 .theme-panel {
   position: absolute;
-  top: 60px;
-  right: 20px;
+  top: calc(100% + 12px);
+  right: 0;
   background: var(--theme-panel-bg);
   border: 1px solid var(--theme-panel-border);
   border-radius: 14px;
@@ -430,6 +430,7 @@ html[data-theme="sunset"] .theme-label {
    ============================================= */
 
 .history-panel {
+  position: relative;
   width: 240px;
   background: var(--app-bg);
   border-radius: var(--radius);
